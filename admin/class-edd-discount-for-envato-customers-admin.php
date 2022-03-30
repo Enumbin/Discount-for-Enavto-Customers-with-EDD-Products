@@ -168,7 +168,7 @@ class Edd_Discount_For_Envato_Customers_Admin extends Edd_Discount_For_Envato_Cu
 			global $post;
 			$plan_name = $this->edddfe_sanitization($_POST['edddfe_plan']);
 			$envato_ids = $this->edddfe_sanitization($_POST['edddfe_envato_product_ids']);
-			$check_existence = $this->has_discount_on_product($post->ID, 'edd', $envato_ids);
+			$check_existence = $this->has_discount_on_product($post->ID, 'edd');
 			
 			if(!$check_existence){
 				$plans = $this->edddfe_add_plan($post->ID, $envato_ids, $plan_name);

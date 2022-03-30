@@ -175,7 +175,6 @@ class Edd_Discount_For_Envato_Customers_Public extends Edd_Discount_For_Envato_C
 					$this->edddfe_add_data($result['buyer'],$new_coupon_id,$info_license,$has_discount['plans']);
 					$codes = $this->get_discount_codes($new_coupon_id);
 					$this->show_coupons($codes);
-					$this->edddfe_send_email($result['buyer'],$codes ,$has_discount['plan_names']);
 				}else{
 					$this->show_error(__("No Discount Plan Available for ",'edd-discount-for-envato-customers') . $info_license['item_name']);
 				}
@@ -195,17 +194,6 @@ class Edd_Discount_For_Envato_Customers_Public extends Edd_Discount_For_Envato_C
 		}else{
 			$this->show_error(__("Invalid Purchase Code!!!",'edd-discount-for-envato-customers'));
 		}
-	}
-
-	private function edddfe_send_email($buyer,$codes ,$plans){
-
-		$email_data = $this->edddfe_get_email_data();
-		extract($email_data);
-		$plans = implode(", ", $plans);
-		$codes = implode(", ", $codes);
-		$message = sprintf($message, $buyer, $codes, $plans);
-		wp_mail($to, $subject, $message);
-
 	}
 
 	private function create_edd_discount($buyer, $discount_info, $plan_exists = array()){
@@ -293,7 +281,7 @@ class Edd_Discount_For_Envato_Customers_Public extends Edd_Discount_For_Envato_C
 	private function edddfe_update_data($buyer, $coupon_id, $info,$plans){
 
 		global $wpdb;
-		$sql = "SELECT buyer_id FROM {$wpdb->prefix}edddfe_buyer WHERE name = '$buyer'";
+		$sql = $wpdb->prepare("SELECT buyer_id FROM {$wpdb->prefix}edddfe_buyer WHERE name = %s", $buyer);
 		$results = $wpdb->get_var( $sql);
 		foreach($plans as $plan){
 			$license_id = $wpdb->insert( 

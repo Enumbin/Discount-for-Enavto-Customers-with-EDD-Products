@@ -35,16 +35,21 @@ class Edd_Discount_For_Envato_Customers_Provider {
 		}
 		global $wpdb;
 		$pl_q_part = "";
+		$prep_args = array(
+			$id
+		);
 		if(isset($existing) && !empty($existing)){
 			if(is_array($existing)){
-				$plans = implode(",",$existing);
+				$plans = implode(', ', array_fill(0, count($existing), '%d'));
+				$prep_args = array_merge($prep_args,$existing );
 			}else{
 				$plans = $existing;
 			}
 			$pl_q_part = " AND pl.plan_id NOT IN ($plans)";
+			
 		}
 		$for = $for .= '_product_id';
-		$query = "SELECT * FROM `{$wpdb->prefix}edddfe_plans` AS pl WHERE $for = " . $id  . $pl_q_part;
+		$query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}edddfe_plans` AS pl WHERE $for = %d $pl_q_part", $prep_args );
 		$results = $wpdb->get_results($query ,ARRAY_A);
 		if(isset($results) && !empty($results)){
 			$return = array();
@@ -61,7 +66,8 @@ class Edd_Discount_For_Envato_Customers_Provider {
 
 	protected function has_plan_for_purchase_code($code){
 		global $wpdb;
-		$results = $wpdb->get_results( "SELECT plan_id,coupon_id  FROM `{$wpdb->prefix}edddfe_license_details` WHERE envato_purchase_code = '{$code}'", ARRAY_A);
+		$query = $wpdb->prepare( "SELECT plan_id,coupon_id  FROM `{$wpdb->prefix}edddfe_license_details` WHERE envato_purchase_code = %s", $code );
+		$results = $wpdb->get_results( $query, ARRAY_A);
 		if(isset($results) && !empty($results)){
 			$return = array();
 			foreach($results as $result){
@@ -90,17 +96,7 @@ class Edd_Discount_For_Envato_Customers_Provider {
 		
 		return $codes;
 	}
-
-	protected function edddfe_get_email_data(){
-
-		$args = array(
-			"to" => "classydevs@gmail.com",
-			"subject" => "New Discont Code Generated",
-			"message" => "The Envato Buyer '%s' has created new Coupon Codes '%s' for The Plans '%s'"
-		);
-		return $args;
-	}
-
+	
 	protected function edddfe_get_envato_token(){
 		$token = edd_get_option( 'edddfe_personal_token', '' );
 		return $token;
