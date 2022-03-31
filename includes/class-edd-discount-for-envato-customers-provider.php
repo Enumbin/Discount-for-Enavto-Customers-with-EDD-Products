@@ -38,18 +38,17 @@ class Edd_Discount_For_Envato_Customers_Provider {
 		$prep_args = array(
 			$id
 		);
+		$for = $for .= '_product_id';
 		if(isset($existing) && !empty($existing)){
 			if(is_array($existing)){
-				$plans = implode(', ', array_fill(0, count($existing), '%d'));
 				$prep_args = array_merge($prep_args,$existing );
-			}else{
-				$plans = $existing;
 			}
-			$pl_q_part = " AND pl.plan_id NOT IN ($plans)";
-			
+			$pl_q_part = "";
+			$query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}edddfe_plans` AS pl WHERE $for = %d  AND pl.plan_id NOT IN (".implode(', ', array_fill(0, count($existing), '%d')).")", $prep_args );
+		
+		}else{
+			$query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}edddfe_plans` AS pl WHERE $for = %d", $prep_args );
 		}
-		$for = $for .= '_product_id';
-		$query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}edddfe_plans` AS pl WHERE $for = %d $pl_q_part", $prep_args );
 		$results = $wpdb->get_results($query ,ARRAY_A);
 		if(isset($results) && !empty($results)){
 			$return = array();

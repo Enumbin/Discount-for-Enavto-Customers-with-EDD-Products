@@ -195,7 +195,6 @@ class Edd_Discount_For_Envato_Customers_Public extends Edd_Discount_For_Envato_C
 			$this->show_error(__("Invalid Purchase Code!!!",'edd-discount-for-envato-customers'));
 		}
 	}
-
 	private function create_edd_discount($buyer, $discount_info, $plan_exists = array()){
 		$percentage = $this->edddfe_get_discount_percentage();
 		$disc_code = $buyer . $percentage;
@@ -216,7 +215,6 @@ class Edd_Discount_For_Envato_Customers_Public extends Edd_Discount_For_Envato_C
 		$new_discount = edd_store_discount( $args );
 		return $new_discount;
 	}
-
 	private function edit_edd_discount($buyer, $discount_info, $existing_coupons = array()){
 		$percentage = $this->edddfe_get_discount_percentage();
 		$old_discount     = new EDD_Discount( (int) $existing_coupons[0]);
@@ -244,7 +242,6 @@ class Edd_Discount_For_Envato_Customers_Public extends Edd_Discount_For_Envato_C
 			return $new_discount;
 		}
 	}
-
 	private function edddfe_add_data($buyer, $coupon_id, $info,$plans){
 		global $wpdb;
 		$buyer = $wpdb->insert( 
@@ -279,7 +276,6 @@ class Edd_Discount_For_Envato_Customers_Public extends Edd_Discount_For_Envato_C
 		}
 	}
 	private function edddfe_update_data($buyer, $coupon_id, $info,$plans){
-
 		global $wpdb;
 		$sql = $wpdb->prepare("SELECT buyer_id FROM {$wpdb->prefix}edddfe_buyer WHERE name = %s", $buyer);
 		$results = $wpdb->get_var( $sql);
